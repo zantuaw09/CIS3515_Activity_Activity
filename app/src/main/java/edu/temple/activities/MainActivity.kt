@@ -1,14 +1,19 @@
 package edu.temple.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+const val IN_KEY = "inKey"
 class MainActivity : AppCompatActivity() {
+
+    val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +28,10 @@ class MainActivity : AppCompatActivity() {
         with (findViewById<RecyclerView>(R.id.textSizeSelectorRecyclerView)) {
 
             // TODO Step 2: Implement lambda body to launch new activity and pass value
-            adapter = TextSizeAdapter(textSizes){
-
+            adapter = TextSizeAdapter(textSizes){ i : Int ->
+                val intent = Intent(this@MainActivity, DisplayActivity::class.java)
+                intent.putExtra(IN_KEY, i.toString())
+                launcher.launch(intent)
             }
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
@@ -36,12 +43,12 @@ class MainActivity : AppCompatActivity() {
 
 
 /* Convert to RecyclerView.Adapter */
-class TextSizeAdapter (private val textSizes: Array<Int>, callback: (Int)->Unit) : RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
+class TextSizeAdapter (private val textSizes: Array<Int>, private val callback: (Int)->Unit) : RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
 
     // TODO Step 1: Complete onClickListener to return selected number
     inner class TextSizeViewHolder(val textView: TextView) : RecyclerView.ViewHolder (textView) {
         init {
-            textView.setOnClickListener {  }
+            textView.setOnClickListener { callback(textView.text.toString().toInt()) }
         }
     }
 
