@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             // TODO Step 2: Implement lambda body to launch new activity and pass value
             adapter = TextSizeAdapter(textSizes){ i : Int ->
                 val intent = Intent(this@MainActivity, DisplayActivity::class.java)
-                intent.putExtra(IN_KEY, i.toString())
+                intent.putExtra(IN_KEY, i)
                 launcher.launch(intent)
             }
             layoutManager = LinearLayoutManager(this@MainActivity)
